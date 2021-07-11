@@ -104,3 +104,9 @@ Result: PASS
 If you download this repo you can run this code for yourself from the root project directory.
 
 Running tests with a test harness is useful as it can run multiple test files and tell us if the test suite passed or failed overall. It can execute tests concurrently so the test suite runs faster. And by default it limits output to only the summary and any failed tests, so the terminal isn't filled with noise. A few years ago I wrote an [introduction to prove](https://www.perl.com/article/177/2015/6/9/Get-to-grips-with-Prove-Perl-s-test-workhorse/) which describes its main features.
+
+Alternatives
+------------
+* [shunit2](https://github.com/kward/shunit2) is an xUnit-style unit test framework for Bourne-like shell code
+* [sharness](https://github.com/mlafeldt/Sharness) is a TAP unit test shell library like `tap.sh` but with more features
+* The TAP website has a list of [shell test libraries](https://testanything.org/producers.html#shell) ("producers")
