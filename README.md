@@ -105,6 +105,42 @@ If you download this repo you can run this code for yourself from the root proje
 
 Running tests with a test harness is useful as it can run multiple test files and tell us if the test suite passed or failed overall. It can execute tests concurrently so the test suite runs faster. And by default it limits output to only the summary and any failed tests, so the terminal isn't filled with noise. A few years ago I wrote an [introduction to prove](https://www.perl.com/article/177/2015/6/9/Get-to-grips-with-Prove-Perl-s-test-workhorse/) which describes its main features.
 
+Installation
+------------
+Clone/download this repo. The test suite emits TAP, so it can conveniently be run with `prove`:
+
+```
+$ prove tests/*
+tests/end.sh ... ok
+tests/fail.sh .. ok
+tests/ok.sh .... ok
+tests/pass.sh .. ok
+All tests successful.
+Files=4, Tests=9,  0 wallclock secs ( 0.01 usr +  0.00 sys =  0.01 CPU)
+Result: PASS
+```
+
+If you don't have a TAP test harness like prove, you can run the tests with this one liner and eyeball the output.
+
+```
+$ for t in tests/*;do "$t"; done
+ok 1 end outputs the number of tests run (1..10==1..10)
+ok 2 end outputs the planned number of tests (1..5==1..5)
+1..2
+ok 1  (not ok 1 ==not ok 1 )
+ok 2 with expression (not ok 1 with expression==not ok 1 with expression)
+1..2
+ok 1  (ok 1 ==ok 1 )
+ok 2 with expression (ok 1 with expression==ok 1 with expression)
+ok 3  (not ok 1 ==not ok 1 )
+1..3
+ok 1  (ok 1 ==ok 1 )
+ok 2 with expression (ok 1 with expression==ok 1 with expression)
+1..2
+```
+
+If the tests pass, add `tap.sh` to your PATH environment variable, (or copy it to a location already in PATH) and you can start using it.
+
 Alternatives
 ------------
 * [shunit2](https://github.com/kward/shunit2) is an xUnit-style unit test framework for Bourne-like shell code
