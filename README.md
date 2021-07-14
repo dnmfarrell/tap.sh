@@ -1,23 +1,25 @@
 `tap.sh` is a POSIX-compliant test library for shell code. It emits [Test Anything Protocol](https://testanything.org/tap-specification.html) output, so you can run the your unit tests with any TAP-compatible test harness.
 
-It comes with four functions:
+It comes with these functions:
 
 ```
-tap_pass [description]         - pass a test
-tap_fail [description]         - fail a test
-tap_ok pass_flag [description] - pass a test if pass_flag equals 1, else fail
-tap_end [count]                - print the test plan and exit
+tap_pass [description]            - pass a test
+tap_fail [description]            - fail a test
+tap_ok pass_flag [description]    - pass a test if pass_flag equals 1, else fail
+tap_cmp_str got exp [description] - pass a test if got string equals exp, else fail
+tap_cmp_int got exp [description] - pass a test if got integer equals exp, else fail
+tap_end [count]                   - print the test plan and exit
 ```
 
-Example
--------
+Tutorial
+--------
 Imagine we have written a shell library called `examples/hello/hello.sh`. It has one function, which by default prints "Hello, World!":
 
 ```sh
 hello() {
   subject="$1"
-  [ -z "$subject" ] && subject="World"
-  echo "Hello, $subject!"
+  [ -z "$subject" ] && subject="World!"
+  echo "Hello, $subject"
 }
 ```
 
@@ -81,7 +83,7 @@ fi
 hello_out=$(hello "you")
 pass=0
 [ "$hello_out" = "Hello, you!" ] && pass=1
-tap_ok "$pass" "hello you"
+tap_ok "$pass" "hello \"you\""
 
 # print our test plan to ensure we ran 2 tests
 tap_end "2"
@@ -90,10 +92,77 @@ tap_end "2"
 Test #2 checks that calling `hello` with "you" emits "Hello, you!" instead of the default. Instead of an if/else block, it calls `tap_ok` with a success flag to pass or fail the test. It also calls `tap_end` with the number of tests to ensure we ran both tests. Running it with `prove -v` shows us the individual tests run, as well as a summary:
 
 ```
-prove -v ./examples/hello/hello-test.sh
-./examples/hello/hello-test.sh ..
+$ prove -v examples/hello/hello-test.sh
+examples/hello/hello-test.sh ..
 ok 1 hello
-ok 2 hello you
+not ok 2 hello "you"
+1..2
+Failed 1/2 subtests 
+
+Test Summary Report
+-------------------
+examples/hello/hello-test.sh (Wstat: 0 Tests: 2 Failed: 1)
+  Failed test:  2
+Files=1, Tests=2,  0 wallclock secs ( 0.01 usr +  0.00 sys =  0.01 CPU)
+Result: FAIL
+```
+
+Uh oh, the second test case failed! It would be helpful if the test printed the mismatched variables to help us debug the issue. We can simplify our test cases to use the `tap_cmp_str` function to compare two strings and print them if they don't match:
+
+```sh
+#!/bin/sh
+
+# import our test functions and our hello function
+. "$PWD/tap.sh"
+. "$PWD/examples/hello/hello.sh"
+
+# test #1 does hello print the expected output?
+hello_out=$(hello)
+tap_cmp_str "$hello_out" "Hello, World!" "hello"
+
+# test #2 does hello "you" print the expected output?
+hello_out=$(hello "you")
+tap_cmp_str "$hello_out" "Hello, you!" "hello \"you\""
+
+# print our test plan to ensure we ran 2 tests
+tap_end "2"
+```
+
+Re-running the tests, now we get some actionable output:
+
+```
+$ prove -v examples/hello/hello-test.sh 
+examples/hello/hello-test.sh .. 
+ok 1 hello
+not ok 2 hello "you" - expected 'Hello, you!' but got 'Hello, you'
+1..2
+Failed 1/2 subtests 
+
+Test Summary Report
+-------------------
+examples/hello/hello-test.sh (Wstat: 0 Tests: 2 Failed: 1)
+  Failed test:  2
+Files=1, Tests=2,  0 wallclock secs ( 0.01 usr +  0.00 sys =  0.01 CPU)
+Result: FAIL
+```
+
+Our `hello` function is appending the "!" in the wrong place; we want to greet everybody with enthusiasm, not just the "World"!. Here's the fixed-up version, with the "!" moved to the `echo` argument:
+
+```sh
+hello() {
+  subject="$1"
+  [ -z "$subject" ] && subject="World"
+  echo "Hello, $subject!"
+}
+```
+
+And now the tests pass:
+
+```
+$ prove -v examples/hello/hello-test.sh
+examples/hello/hello-test.sh ..
+ok 1 hello
+ok 2 hello "you"
 1..2
 ok
 All tests successful.
@@ -103,7 +172,32 @@ Result: PASS
 
 If you download this repo you can run this code for yourself from the root project directory.
 
-Running tests with a test harness is useful as it can run multiple test files and tell us if the test suite passed or failed overall. It can execute tests concurrently so the test suite runs faster. And by default it limits output to only the summary and any failed tests, so the terminal isn't filled with noise. A few years ago I wrote an [introduction to prove](https://www.perl.com/article/177/2015/6/9/Get-to-grips-with-Prove-Perl-s-test-workhorse/) which describes its main features.
+Running tests with a test harness is useful as it can run multiple test files and tell us if the test suite passed or failed overall. It can execute tests concurrently so the test suite runs faster. And by default it limits output to only the summary, so the terminal isn't filled with noise. A few years ago I wrote an [introduction to prove](https://www.perl.com/article/177/2015/6/9/Get-to-grips-with-Prove-Perl-s-test-workhorse/) which describes its main features.
+
+If prove isn't your jam, The TAP website has a [list](https://testanything.org/consumers.html) of other TAP parsers that can be used in conjunction with a test harness. A test harness can be as simple as a one liner, here using [tapview](https://gitlab.com/esr/tapview):
+
+```
+$ result="PASS";for t in tests/*;do echo "$t"; "./$t" | tapview || result="FAIL";done;echo "$result"
+tests/cmp_int.sh
+....
+4 tests, 0 failures.
+tests/cmp_str.sh
+...
+3 tests, 0 failures.
+tests/end.sh
+..
+2 tests, 0 failures.
+tests/fail.sh
+..
+2 tests, 0 failures.
+tests/ok.sh
+...
+3 tests, 0 failures.
+tests/pass.sh
+..
+2 tests, 0 failures.
+PASS
+```
 
 Installation
 ------------

@@ -26,3 +26,19 @@ tap_ok() {
     tap_fail "$2"
   fi
 }
+
+tap_cmp_str() {
+  if [ "$1" = "$2" ];then
+    tap_pass "$3"
+  else
+    tap_fail "$3 - expected '$2' but got '$1'"
+  fi
+}
+
+tap_cmp_int() {
+  if [ "$1" -eq "$2" ];then
+    tap_pass "$3"
+  else
+    tap_fail "$3 - '$2' does not equal '$1'"
+  fi
+}
