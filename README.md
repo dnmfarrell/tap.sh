@@ -177,23 +177,8 @@ Running tests with a test harness is useful as it can run multiple test files an
 If prove isn't your jam, The TAP website has a [list](https://testanything.org/consumers.html) of other TAP parsers that can be used in conjunction with a test harness. A test harness can be as simple as a one liner, here using [tapview](https://gitlab.com/esr/tapview):
 
 ```
-$ result="PASS";for t in tests/*;do echo "$t"; "./$t" | tapview || result="FAIL";done;echo "$result"
-tests/cmp_int.sh
-....
-4 tests, 0 failures.
-tests/cmp_str.sh
-...
-3 tests, 0 failures.
-tests/end.sh
-..
-2 tests, 0 failures.
-tests/fail.sh
-..
-2 tests, 0 failures.
-tests/ok.sh
-...
-3 tests, 0 failures.
-tests/pass.sh
+$ res="PASS";for t in examples/hello/*test.sh;do echo "$t"; "./$t" | tapview || res="FAIL";done;echo "$res"
+examples/hello/hello-test.sh
 ..
 2 tests, 0 failures.
 PASS
