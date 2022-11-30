@@ -15,6 +15,8 @@ tap_fail() {
 tap_end() {
   num_tests="$1"
   [ -z "$num_tests" ] && num_tests="$TAP_TEST_COUNT"
+  echo "# tests: $TAP_TEST_COUNT"
+  echo "# fails: $TAP_FAIL_COUNT"
   echo "1..$num_tests"
   exit $(( TAP_FAIL_COUNT > 0 ))
 }
@@ -23,7 +25,7 @@ tap_ok() {
   if [ "$1" -eq 1 ];then
     tap_pass "$2"
   else
-    tap_fail "$2"
+    tap_fail "$2 - expected '1' but got '$1'"
   fi
 }
 
@@ -39,6 +41,6 @@ tap_cmp_int() {
   if [ "$1" -eq "$2" ];then
     tap_pass "$3"
   else
-    tap_fail "$3 - '$2' does not equal '$1'"
+    tap_fail "$3 - expected '$2' but got '$1'"
   fi
 }
