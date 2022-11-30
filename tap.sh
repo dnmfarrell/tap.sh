@@ -8,7 +8,7 @@ tap_pass() {
 
 tap_fail() {
   TAP_TEST_COUNT=$(( TAP_TEST_COUNT+1 ))
-  TAP__FAIL_COUNT=$(( TAP__FAIL_COUNT+1 ))
+  TAP_FAIL_COUNT=$(( TAP_FAIL_COUNT+1 ))
   echo "not ok $TAP_TEST_COUNT $1"
 }
 
