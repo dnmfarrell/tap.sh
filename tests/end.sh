@@ -4,13 +4,18 @@
 #
 # try tap.sh from the source tree first,
 # fallback to the installed version
-if [ -x "../tap.sh" ]
+if [ -x "$PWD/tap.sh" ]
 then
-    . "../tap.sh"
+    . "$PWD/tap.sh"
 else
-    . tap.sh
-fi
+  if [ -x "../tap.sh" ]
+  then
+    . "../tap.sh"
 
+  else
+    . tap.sh
+  fi
+fi
 
 # we need more than one passed test to make sure, that the values in
 # the plan line have the correct order and tap_end returns success
@@ -27,7 +32,9 @@ tap_cmp_int 0 $end_rc "- tap_end had a resultcode of 0"
 
 
 # we need a failed test to make sure, that tap_end returns failure
-tap_fail "- this prints 'not ok'"
+# but we replace the output with a "ok"
+# so a test harness sees no failure here
+echo  "ok 5 - replaced output of tap_fail" && tap_fail >/dev/null
 
 # verify plan line: "1..5" and resultcode: 1 (we had a failing test)
 end_out=$( tap_end )
@@ -44,4 +51,5 @@ out="`echo "$end_out" | grep -v "^#" `"
 tap_cmp_str "$out"  "1..12" "- we forced 12 as test counter in tap_end"
 
 # finish this testsuite for tap_end
-tap_end
+# we avoid tap_end here, so a test harness sees no failure
+echo "1..$TAP_TEST_COUNT"
