@@ -190,12 +190,14 @@ Clone/download this repo. The test suite emits TAP, so it can conveniently be ru
 
 ```
 $ prove tests/*
-tests/end.sh ... ok
-tests/fail.sh .. ok
-tests/ok.sh .... ok
-tests/pass.sh .. ok
+tests/cmp_int.sh .. ok
+tests/cmp_str.sh .. ok
+tests/end.sh ...... ok
+tests/fail.sh ..... ok
+tests/ok.sh ....... ok
+tests/pass.sh ..... ok
 All tests successful.
-Files=4, Tests=9,  0 wallclock secs ( 0.01 usr +  0.00 sys =  0.01 CPU)
+Files=6, Tests=23,  0 wallclock secs ( 0.05 usr  0.00 sys +  0.01 cusr  0.02 csys =  0.08 CPU)
 Result: PASS
 ```
 
@@ -203,9 +205,25 @@ If you don't have a TAP test harness like prove, you can run the tests with this
 
 ```
 $ for t in tests/*;do "$t"; done
-ok 1 end outputs the number of tests run (1..10==1..10)
-ok 2 end outputs the planned number of tests (1..5==1..5)
-1..2
+ok 1 1 (ok 1 match succeeds==ok 1 match succeeds)
+ok 2 1 (not ok 1 mismatch fails - '1' does not equal '0'==not ok 1 mismatch fails - '1' does not equal '0')
+ok 3 1 (not ok 1 non-int fails - '1' does not equal 'foo'==not ok 1 non-int fails - '1' does not equal 'foo')
+ok 4  (not ok 1 empty fails - '' does not equal ''==not ok 1 empty fails - '' does not equal '')
+1..4
+ok 1 foo (ok 1 match succeeds==ok 1 match succeeds)
+ok 2 bar (not ok 1 mismatch fails - expected 'bar' but got 'foo'==not ok 1 mismatch fails - expected 'bar' but got 'foo')
+ok 3  (ok 1 empty succeeds==ok 1 empty succeeds)
+1..3
+ok 1 this prints 'ok'
+ok 2 this prints 'ok'
+ok 3 we used two tests before this tap_end
+ok 4 since every test succeeded: resultcode of tap_end must be 0
+ok 5 we forced 42 as test counter in this tap_end
+ok 6 we forced a different test counter: resultcode of tap_end must be 1
+ok 7 - overwrite result: (not ok 7 expecting a 'not ok' here)
+ok 8 we used 7 tests before this tap_end
+ok 9 we forced a failing test: resultcode of tap_end must be 1
+1..9
 ok 1  (not ok 1 ==not ok 1 )
 ok 2 with expression (not ok 1 with expression==not ok 1 with expression)
 1..2
