@@ -8,7 +8,7 @@ tap_pass() {
 
 tap_fail() {
   TAP_TEST_COUNT=$(( TAP_TEST_COUNT+1 ))
-  TAP__FAIL_COUNT=$(( TAP__FAIL_COUNT+1 ))
+  TAP_FAIL_COUNT=$(( TAP_FAIL_COUNT+1 ))
   echo "not ok $TAP_TEST_COUNT $1"
 }
 
@@ -16,6 +16,7 @@ tap_end() {
   num_tests="$1"
   [ -z "$num_tests" ] && num_tests="$TAP_TEST_COUNT"
   echo "1..$num_tests"
+  [ $num_tests = $TAP_TEST_COUNT ] || exit 1
   exit $(( TAP_FAIL_COUNT > 0 ))
 }
 
