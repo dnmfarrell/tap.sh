@@ -3,18 +3,16 @@
 It comes with these functions:
 
 ```
-tap_pass [description]            - pass a test
-tap_fail [description]            - fail a test
-tap_ok pass_flag [description]    - pass a test if pass_flag equals 0, else fail
-tap_cmp got exp [description]     - pass a test if got string equals exp, else fail
-tap_end                           - print the test plan and exit
+tap_pass [description]           - pass a test
+tap_fail [description]           - fail a test
+tap_ok   pass_flag [description] - pass a test if pass_flag equals 0, else fail
+tap_cmp  got exp [description]   - pass a test if got string equals exp, else fail
+tap_end  [num-tests]             - print the test plan and exit
 ```
 
 Alternatives
 ------------
-* [shunit2](https://github.com/kward/shunit2) is an xUnit-style unit test framework for Bourne-like shell code
-* [sharness](https://github.com/mlafeldt/Sharness) is a TAP unit test shell library like `tap.sh` but with more features
-* The TAP website has a list of [shell test libraries](https://testanything.org/producers.html#shell) ("producers")
+The TAP website has a list of [shell test libraries](https://testanything.org/producers.html#shell) ("producers").
 
 Tutorial
 --------
