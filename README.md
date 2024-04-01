@@ -5,10 +5,9 @@ It comes with these functions:
 ```
 tap_pass [description]            - pass a test
 tap_fail [description]            - fail a test
-tap_ok pass_flag [description]    - pass a test if pass_flag equals 1, else fail
-tap_cmp_str got exp [description] - pass a test if got string equals exp, else fail
-tap_cmp_int got exp [description] - pass a test if got integer equals exp, else fail
-tap_end [count]                   - print the test plan and exit
+tap_ok pass_flag [description]    - pass a test if pass_flag equals 0, else fail
+tap_cmp got exp [description]     - pass a test if got string equals exp, else fail
+tap_end                           - print the test plan and exit
 ```
 
 Tutorial
@@ -107,7 +106,7 @@ Files=1, Tests=2,  0 wallclock secs ( 0.01 usr +  0.00 sys =  0.01 CPU)
 Result: FAIL
 ```
 
-Uh oh, the second test case failed! It would be helpful if the test printed the mismatched variables to help us debug the issue. We can simplify our test cases to use the `tap_cmp_str` function to compare two strings and print them if they don't match:
+Uh oh, the second test case failed! It would be helpful if the test printed the mismatched variables to help us debug the issue. We can simplify our test cases to use the `tap_cmp` function to compare two strings and print them if they don't match:
 
 ```sh
 #!/bin/sh
@@ -118,11 +117,11 @@ Uh oh, the second test case failed! It would be helpful if the test printed the 
 
 # test #1 does hello print the expected output?
 hello_out=$(hello)
-tap_cmp_str "$hello_out" "Hello, World!" "hello"
+tap_cmp "$hello_out" "Hello, World!" "hello"
 
 # test #2 does hello "you" print the expected output?
 hello_out=$(hello "you")
-tap_cmp_str "$hello_out" "Hello, you!" "hello \"you\""
+tap_cmp "$hello_out" "Hello, you!" "hello 'you'"
 
 # print our test plan to ensure we ran 2 tests
 tap_end "2"
@@ -235,8 +234,6 @@ ok 1  (ok 1 ==ok 1 )
 ok 2 with expression (ok 1 with expression==ok 1 with expression)
 1..2
 ```
-
-If the tests pass, add `tap.sh` to your PATH environment variable, (or copy it to a location already in PATH) and you can start using it.
 
 Alternatives
 ------------

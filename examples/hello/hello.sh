@@ -1,5 +1,6 @@
+#!/bin/sh
 hello() {
-  subject="$1"
-  [ -z "$subject" ] && subject="World"
-  echo "Hello, $subject!"
+	subject="$1"
+	[ -z "$subject" ] && subject="World"
+	echo "Hello, $subject!"
 }

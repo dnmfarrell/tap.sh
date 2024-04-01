@@ -3,10 +3,10 @@
 
 test_count=0
 test_output() {
-  test_count=$(( test_count+1 ))
-  out=$(tap_cmp_str "$@")
-  [ "$out" != "$4" ] && printf "not "
-  echo "ok $test_count $2 ($4==$out)"
+	test_count=$((test_count + 1))
+	out=$(tap_cmp "$@")
+	[ "$out" != "$4" ] && printf "not "
+	echo "ok $test_count $2 ($4==$out)"
 }
 
 test_output "foo" "foo" "match succeeds" "ok 1 match succeeds"
